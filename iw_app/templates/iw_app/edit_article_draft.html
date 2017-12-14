@@ -1,0 +1,108 @@
+{% extends "iw_app/modified_base.html" %}
+
+{% load static %}
+{% block content %}
+<style>
+  main{
+    margin-top: 100px;
+  }
+  h4{
+    margin-bottom: 10px;
+  }
+  .hr{
+    margin-top: 10px;
+  }
+  #delete_button{
+    float:right;
+  }
+  #delete_button:hover{
+    background-color: red;
+  }
+</style>
+<main>
+{% if draft.id %}
+<h4>Draft:{{ draft.id }}&emsp;{{ draft.article_name }}</h4>
+{% elif article.id %}
+<h4>Article:{{ article.id }}&emsp;{{ article.article_name }}</h4>
+{% else %}
+<section id='article_type'>
+  <p><strong>Article Type:</strong>&emsp;
+  <span class="nav_filter">
+    {% if filter_m == "l" %}
+    <a class="focus" href="/author_panel/new_draft/l">|&emsp;Link&emsp;|</a>
+    {% else %}
+    <a href="/author_panel/new_draft/l">|&emsp;Link&emsp;|</a>
+    {% endif %}
+  </span>
+  &emsp;
+  <span class="nav_filter">
+    {% if filter_m == "e" %}
+    <a class="focus" href="/author_panel/new_draft/e">|&emsp;Editorial&emsp;|</a>
+    {% else %}
+    <a href="/author_panel/new_draft/e">|&emsp;Editorial&emsp;|</a>
+    {% endif %}
+  </span>
+  &emsp;
+  <span class="nav_filter">
+    {% if filter_m == "t" %}
+    <a class="focus" href="/author_panel/new_draft/t">|&emsp;Tutorial&emsp;|</a>
+    {% else %}
+    <a href="/author_panel/new_draft/t">|&emsp;Tutorial&emsp;|</a>
+    {% endif %}
+  </span>
+  </p>
+</section>
+{% endif %}
+<div class='hr'>==================================================================================================================================================================</div>
+{% if draft.id %}
+<section id='main_form'>
+  {% if form.errors %}
+  <p>Who do you think you are?</p>
+  {% endif %}
+
+  <form id="new_draft" method="post" action="{% url 'iw_app:edit_draft' draft.id %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit">|&emsp;submit_draft&emsp;|</button>
+    <button type="submit" name="return_and_preview">|&emsp;submit_preview&emsp;|</button>
+    &emsp;<span><a class="navigation" href="{% url 'iw_app:staging_all' %}">|&emsp;return_without_saving&emsp;|</a></span>
+    <button type="submit" id='delete_button' name="delete_this_thing">|&emsp;delete_draft&emsp;|</button>
+    <!--<input type="hidden" name="next" value="{% url 'iw_app:index' %}"/>-->
+  </form>
+</section>
+{% elif article.id %}
+<section id='main_form'>
+  {% if form.errors %}
+  <p>Who do you think you are?</p>
+  {% endif %}
+
+  <form id="new_draft" method="post" action="{% url 'iw_app:edit_article' article.id %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit">|&emsp;submit_edit&emsp;|</button>
+    <button type="submit" name="return_and_preview">|&emsp;submit_goto_article&emsp;|</button>
+    &emsp;<span><a class="navigation" href="{% url 'iw_app:staging_all' %}">|&emsp;return_without_saving&emsp;|</a></span>
+    <!--<button type="submit" id='delete_button' name="delete_this_thing">|&emsp;delete_draft&emsp;|</button>-->
+    <!--<input type="hidden" name="next" value="{% url 'iw_app:index' %}"/>-->
+  </form>
+</section>
+{% else %}
+<section id='main_form'>
+  {% if form.errors %}
+  <p>Who do you think you are?</p>
+  {% endif %}
+
+  <form id="new_draft" method="post" action="{% url 'iw_app:new_draft' filter_m %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit">|&emsp;submit_draft&emsp;|</button>
+    &emsp;<span><a class="navigation" href="{% url 'iw_app:staging_all' %}">|&emsp;return_without_saving&emsp;|</a></span>
+    <!--<input type="hidden" name="next" value="{% url 'iw_app:index' %}"/>-->
+  </form>
+</section>
+{% endif %}
+</main>
+{% endblock content %}

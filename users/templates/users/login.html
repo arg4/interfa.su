@@ -1,0 +1,26 @@
+{% extends "iw_app/base.html" %}
+
+{% block content %}
+  <style>
+    main{
+      margin-top: 100px;
+    }
+  </style>
+  <main>
+  <section>
+  <p>don't have an acct. <a href="{% url 'users:register' %}"> Register </a></p>
+
+  {% if form.errors %}
+  <p>Who do you think you are?</p>
+  {% endif %}
+
+  <form method="post" action="{% url 'users:login' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button name="submit">|&emsp;Login&emsp;|</button>
+    <input type="hidden" name="next" value="{% url 'iw_app:index' %}"/>
+  </form>
+</section>
+  </main>
+{% endblock content %}

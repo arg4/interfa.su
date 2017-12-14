@@ -1,0 +1,92 @@
+{% extends "iw_app/modified_base.html" %}
+
+{% load static %}
+{% block content %}
+
+{% if article.article_type == "ED"  %}
+  <!-- import global styles for tutorial here... -->
+  {% autoescape off %}
+  {{ article.article_caption_styles }}
+  {% endautoescape %}
+{% endif %}
+
+<main id='link_page'>
+  <!-- Return Button -->
+
+  <header>
+    <!-- Top header -->
+    <p class="timestamp">{{ article.date_created|date:"r" }}&nbsp;</p>
+    <p>
+      {% for author in article.name_author.all %}
+        &emsp;
+        <a class="byline">{{ author.username }}</a>
+      {% endfor %}
+      &emsp;
+    </p>
+    <div class='nav_box'>
+      <a class='navigation' href='#bottom'>|&emsp;&dArr;&emsp;|</a>
+    </div>
+    <div class="replies">&nbsp;R{{ article.comment_set.count }}&nbsp;</div>
+    <a class="article_id">&nbsp;#{{ article.id }}&nbsp;</a>
+    <!-- End Top Header -->
+    <h3 name='top'><a href='{{ article.article_external_url }}' target="blank">{{ article.article_name }}</a></h3>
+    <p class='actual_url'><a href='{{ article.article_external_url }}' target="blank">{{ article.article_external_url }}</a></p>
+    {% if article.article_type == "TU" %}
+      <p>{{article.article_description}}</p>
+    {% endif %}
+  </header>
+
+  {% if article.article_type == "LI"%}
+  <div class='hr after_header'>
+    ==================================================================================================================================================================
+  </div>
+  {% endif %}
+
+  {% if article.article_type != "LI" %}
+
+    {% if article.article_type == "TU" %}
+      <link rel="stylesheet" type="text/css" href="{% static 'iw_app/css/tutorial_style.css' %}"> <!-- include default styles for tutorial type articles -->
+    {% endif %}
+  <div id='not_link'>
+    {% autoescape off %}
+    {{ article.article_body_text }}
+    {% endautoescape %}
+  </div>
+  <div class='hr'>
+    ==================================================================================================================================================================
+  </div>
+  {% endif %}
+  <!-- nav filters go to bottom -->
+
+  <article class='comment'>
+    <div class='stats'>
+      <div class='post_date'>Tue, 20 Sep 2016 22:50:50 -0400 </div>
+        <a class='post_author_name anonymous_post'>anonymous</a>
+      <a class='post_id' href='#'>#234632</a>
+    </div>
+    <p class='comment_text'>
+    Look at this cool comment text!!!
+    ﻿</p>
+  </article>
+
+<div class='hr'>
+  ==================================================================================================================================================================
+</div>
+
+
+  <form method="post">
+    <textarea id='reply_box' name='comment_body' onfocus="this.value='';">Reply here.
+    </textarea>
+    <!--<div class='button_bar'>-->
+      <!--{{ form.as_p }}-->
+      <button type="submit">|&emsp;submit_as_usr&emsp;|</button>
+      &emsp;
+      <button type="submit" name="anon_post">|&emsp;submit_as_anon&emsp;|</button>
+      <!--<a class='navigation' href='#' >|&emsp;post&emsp;|</a>&ensp;
+      <a class='navigation' href='#' >|&emsp;post as anon&emsp;|</a>&ensp; -->
+      <span><a class='navigation' href='#top' id='bottom'>|&emsp;&uArr;&emsp;|</a></span>
+    <!--</div>-->
+  </form>
+
+</main>
+{% endblock content %}

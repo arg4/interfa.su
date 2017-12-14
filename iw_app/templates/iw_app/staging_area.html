@@ -1,0 +1,169 @@
+{% extends "iw_app/base.html" %}
+
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'iw_app/css/tutorial_style.css' %}">
+<style>
+  main{
+    margin-top: 100px;
+    width:100%;
+    max-width: 1000px;
+  }
+  h6{
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+  .section{
+    margin-top: 20px;
+  }
+  .article{
+    margin-bottom: 20px;
+    position:relative;
+  }
+
+  .byline{
+    display:inline-block;
+  }
+
+  .external_link{
+    margin-top: 0px;
+    margin-bottom: 10px;
+    display:block;
+  }
+
+  .nav_button{
+    margin-top: 0px;
+    margin-bottom: 0px;
+    text-align: right;
+    display:block;
+    margin-right: 5px;
+  }
+  span p{
+    margin-top: 4px;
+    margin-bottom: 4px;
+    margin-right: 15px;
+  }
+
+  form {
+    margin: 0px;
+    padding: 0px;
+  }
+</style>
+<main>
+    <div class='section'>
+      <div class='col span_2_of_4'>
+
+        <div class='section'>
+        <h4 class='focus'>All Public Drafts</h4>
+        </div>
+
+        {% for draft in drafts %}
+        <div class='section'>
+        <div class='col span_3_of_4 article'>
+          <h6><a class='link_to_full_article' href="{% url 'iw_app:staging_indv' draft.id %}">{{ draft.article_name }}</a></h6>
+          {% if draft.article_external_url %}
+            <a class='external_link' href='{{draft.article_external_url}}'>{{draft.article_external_url}}</a>
+          {% endif %}
+          {% if draft.article_description %}
+            <p class='external_link'>{{draft.article_description}}</p>
+          {% endif %}
+          <div class="timestamp">{{ draft.date_created|date:"r"}}&nbsp;</div>
+          <a class="byline">
+            {% for author in draft.name_author.all %}
+              {{ author.username }}&ensp;
+            {% empty %}
+            {% endfor %}&nbsp;
+          </a>
+        </div>
+        <div class='col span_1_of_4'>
+          <form action="{% url 'iw_app:staging_all' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="vote_article" value="{{draft.id}}"/>
+            <span class='nav_button'>{{draft.draft_vote}}&ensp;<a class='navigation' href="javascript:{}" onclick="this.parentNode.parentNode.submit();">|&emsp;&#128399;&emsp;|</a></span>
+          </form>
+          <!--<span class='nav_button'><p>{{draft.draft_vote}}</p></span>-->
+          <!--<span class='nav_button'><a class='navigation'>|&emsp;&dArr;&emsp;|</a></span>-->
+        </div>
+        </div>
+        {% empty %}
+        {% endfor %}
+      </div>
+      <div class='col span_2_of_4'>
+
+        <div class='section'>
+        <h4 class='focus' >My Complete Articles</h4>
+        </div>
+
+        {% for article in my_articles %}
+        <div class='section'>
+        <div class='col span_3_of_4 article'>
+          <h6><a class="link_to_full_article" href="{% url 'iw_app:article' article.id %}">{{ article.article_name }}</a></h6>
+          {% if article.article_external_url %}
+            <a class='external_link' href='{{article.article_external_url}}'>{{article.article_external_url}}</a>
+          {% endif %}
+          {% if article.article_description %}
+            <p class='external_link'>{{article.article_description}}</p>
+          {% endif %}
+          <div class="timestamp">{{ article.date_created|date:"r"}}&nbsp;</div>
+          <a class="byline">
+            {% for author in article.name_author.all %}
+              {{ author.username }}&ensp;
+            {% empty %}
+            {% endfor %}&nbsp;
+          </a>
+        </div>
+        <div class='col span_1_of_4'>
+          <span class='nav_button'><a class='navigation' href="{% url 'iw_app:edit_article' article.id %}">|&emsp;&#9998;&emsp;|</a></span>
+        </div>
+        </div>
+        {% empty %}
+        {% endfor %}
+
+        <div class='section'>
+        <h4 class='focus'>My Drafts</h4>
+        </div>
+
+        {% for draft in my_drafts%}
+        <div class='section'>
+        <div class='col span_3_of_4 article'>
+          <h6><a class='link_to_full_article' href="{% url 'iw_app:staging_indv' draft.id %}">{{ draft.article_name }}</a></h6>
+          {% if draft.article_external_url %}
+            <a class='external_link' href='{{draft.article_external_url}}'>{{draft.article_external_url}}</a>
+          {% endif %}
+          {% if draft.article_description %}
+            <p class='external_link'>{{draft.article_description}}</p>
+          {% endif %}
+          <div class="timestamp">{{ draft.date_created|date:"r"}}&nbsp;</div>
+          <a class="byline">
+            {% for author in draft.name_author.all %}
+              {{ author.username }}&ensp;
+            {% empty %}
+            {% endfor %}&nbsp;
+          </a>
+        </div>
+        <div class='col span_1_of_4'>
+            <form action="{% url 'iw_app:staging_all' %}" method="post">
+              {% csrf_token %}
+              <span class='nav_button'>
+              <input type="hidden" name="make_public_swap" value="{{draft.id}}"/>
+              <a class='navigation' href="javascript:{}" onclick="this.parentNode.parentNode.submit();">{% if draft.make_public %}|&emsp;&#128473;&emsp;|{% else %}|&emsp;&#10003;&emsp;|{% endif %}</a>
+              <a class='navigation' href="{% url 'iw_app:edit_draft' draft.id %}">|&emsp;&#9998;&emsp;|</a>
+              &ensp;</span>
+              <!--<button type='submit' class='navigation' name='change_public_state' value='{{draft.id}}'>|&emsp;&#10003;&emsp;|</button>-->
+            </form>
+        </div>
+        </div>
+        {% empty %}
+        {% endfor %}
+
+        <div class='section'>
+        <h4 class='focus'>Author Tools</h4>
+        </div>
+
+        <a class='navigation' href="{% url 'iw_app:new_draft' %}">|&emsp;new draft&emsp;|</a>&emsp;
+        <a class='navigation' href="{% static 'iw_app/author_downloads/static_templates.zip' %}">|&emsp;templates&emsp;|</a>
+      </div>
+    </div>
+</main>
+{% endblock content %}

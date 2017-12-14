@@ -1,0 +1,46 @@
+{% load static %}
+<html>
+
+<head>
+<link rel="stylesheet" type="text/css" href="{% static "iw_app/css/style_main.css" %}">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+
+{% if filter_mode == null %}
+  <a href='{% url "iw_app:index" %}' class='return_index'>|<span class='small'>&nbsp;&lArr;</span><span class='big'>&emsp;</span> 界面<span class='big'>&nbsp;Interface Magazine&emsp;</span><span class='small'>&nbsp;</span>|</a>
+{% endif %}
+
+<div class='login'>
+{% if user.is_authenticated %}
+  Hello, <span class="known_post">{{ user.username }}</span>&ensp;
+  <a href="{% url 'users:logout'%}">|&emsp;log_out&emsp;|</a>&ensp;
+{% else %}
+  <a href="{% url 'users:login' %}">|&emsp;log_in / register&emsp;|</a>
+{% endif %}
+
+{% if request != null %}
+  {% if request.get_full_path != "/site_information/"%}
+    &ensp;<a href="{% url 'iw_app:information' %}">|&emsp;Info&emsp;|</a>
+  {% else %}
+    &ensp;<a class="focus" href="{% url 'iw_app:information' %}">|&emsp;Info&emsp;|</a>
+  {% endif %}
+{% else %}
+    &ensp;<a href="{% url 'iw_app:information' %}">|&emsp;Info&emsp;|</a>
+{% endif %}
+</div>
+
+{% block content %}
+
+
+
+{% endblock content %}
+{% load iw_extra %}
+
+<div class="user_author">
+{% if request.user|has_group:"Author" %}
+   <a href="{% url 'iw_app:staging_all'%}">|&emsp;author_tools&emsp;|</a>
+{% endif %}
+</div>
+
+</html>

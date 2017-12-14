@@ -1,0 +1,8 @@
+__pycache__/
+*.sqlite3
+migrations/
+iw_venv/
+interface_environment/
+owa/
+*.pyc
+wsgi.py
